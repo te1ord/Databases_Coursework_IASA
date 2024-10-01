@@ -1,0 +1,1073 @@
+{\rtf1\ansi\ansicpg1252\cocoartf2708
+\cocoatextscaling0\cocoaplatform0{\fonttbl\f0\fnil\fcharset0 HelveticaNeue;\f1\fnil\fcharset0 Menlo-Regular;}
+{\colortbl;\red255\green255\blue255;\red0\green0\blue0;}
+{\*\expandedcolortbl;;\csgray\c0;}
+\paperw11900\paperh16840\margl1440\margr1440\vieww28600\viewh14600\viewkind0
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardirnatural\partightenfactor0
+
+\f0\fs24 \cf0 \'97CREATING TABLES\
+\
+-- \uc0\u1051 \u1110 \u1082 \u1072 \u1088 \u1085 \u1110 \
+DROP TABLE IF EXISTS hospital;\
+CREATE TABLE IF NOT EXISTS hospital (\
+    hospital_id INT AUTO_INCREMENT PRIMARY KEY,\
+    name VARCHAR(255) NOT NULL,\
+    address VARCHAR(255),\
+    specialization VARCHAR(255)\
+);\
+\
+-- \uc0\u1050 \u1086 \u1088 \u1087 \u1091 \u1089 \u1080 \
+DROP TABLE IF EXISTS building;\
+CREATE TABLE IF NOT EXISTS building (\
+    building_id INT AUTO_INCREMENT PRIMARY KEY,\
+    hospital_id INT,\
+    name VARCHAR(255),\
+    address VARCHAR(255),\
+    FOREIGN KEY (hospital_id) REFERENCES hospital(hospital_id)\
+);\
+\
+-- \uc0\u1042 \u1110 \u1076 \u1076 \u1110 \u1083 \u1077 \u1085 \u1085 \u1103 \
+DROP TABLE IF EXISTS department;\
+CREATE TABLE IF NOT EXISTS department (\
+    department_id INT AUTO_INCREMENT PRIMARY KEY,\
+    building_id INT,\
+    name VARCHAR(255),\
+    specialization VARCHAR(255),\
+    FOREIGN KEY (building_id) REFERENCES building(building_id)\
+);\
+\
+-- \uc0\u1055 \u1072 \u1083 \u1072 \u1090 \u1080 \
+DROP TABLE IF EXISTS ward;\
+CREATE TABLE IF NOT EXISTS ward (\
+    ward_id INT AUTO_INCREMENT PRIMARY KEY,\
+    department_id INT,\
+    capacity INT,\
+    filled_status INT,\
+    FOREIGN KEY (department_id) REFERENCES department(department_id)\
+);\
+\
+-- \uc0\u1051 \u1110 \u1078 \u1082 \u1072 \
+DROP TABLE IF EXISTS bed;\
+CREATE TABLE IF NOT EXISTS bed (\
+    bed_id INT AUTO_INCREMENT PRIMARY KEY,\
+    ward_id INT,\
+    is_occupied BOOLEAN,\
+    FOREIGN KEY (ward_id) REFERENCES ward(ward_id)\
+);\
+\
+-- \uc0\u1055 \u1086 \u1083 \u1110 \u1082 \u1083 \u1110 \u1085 \u1110 \u1082 \u1080 \
+DROP TABLE IF EXISTS clinic;\
+CREATE TABLE IF NOT EXISTS clinic (\
+    clinic_id INT AUTO_INCREMENT PRIMARY KEY,\
+    hospital_id INT,\
+    name VARCHAR(255),\
+    FOREIGN KEY (hospital_id) REFERENCES hospital(hospital_id)\
+);\
+\
+-- \uc0\u1051 \u1110 \u1082 \u1072 \u1088 \u1110 \
+DROP TABLE IF EXISTS doctor;\
+CREATE TABLE IF NOT EXISTS doctor (\
+    doctor_id INT AUTO_INCREMENT PRIMARY KEY,\
+    name VARCHAR(255),\
+    specialization VARCHAR(255),\
+    work_experience_in_years INT,\
+    degree VARCHAR(255),\
+    can_work_in_many_institutions BOOLEAN,\
+    age INT,\
+    num_of_operations INT,\
+    num_of_fatal_operations INT,\
+    salary_coef_for_harmful_conditions FLOAT,\
+    extra_vacation_days INT\
+);\
+\
+-- \uc0\u1055 \u1077 \u1088 \u1089 \u1086 \u1085 \u1072 \u1083 \
+DROP TABLE IF EXISTS staff;\
+CREATE TABLE IF NOT EXISTS staff (\
+    staff_id INT AUTO_INCREMENT PRIMARY KEY,\
+    name VARCHAR(255),\
+    age INT,\
+    role VARCHAR(255),\
+    work_experience INT\
+);\
+\
+-- \uc0\u1047 \u1072 \u1081 \u1085 \u1103 \u1090 \u1110 \u1089 \u1090 \u1100 \
+DROP TABLE IF EXISTS employment;\
+CREATE TABLE IF NOT EXISTS employment (\
+    employment_id INT AUTO_INCREMENT PRIMARY KEY,\
+    staff_id INT,\
+    doctor_id INT,\
+    name VARCHAR(255),\
+    hospital_id INT,\
+    clinic_id INT,\
+    is_active BOOLEAN,\
+    FOREIGN KEY (staff_id) REFERENCES staff(staff_id),\
+    FOREIGN KEY (doctor_id) REFERENCES doctor(doctor_id),\
+    FOREIGN KEY (hospital_id) REFERENCES hospital(hospital_id),\
+    FOREIGN KEY (clinic_id) REFERENCES clinic(clinic_id)\
+);\
+\
+-- \uc0\u1055 \u1072 \u1094 \u1110 \u1108 \u1085 \u1090 \u1080 \
+DROP TABLE IF EXISTS patient;\
+CREATE TABLE IF NOT EXISTS patient (\
+    patient_id INT AUTO_INCREMENT PRIMARY KEY,\
+    name VARCHAR(255),\
+    date_of_birth DATE,\
+    address VARCHAR(255)\
+);\
+\
+-- \uc0\u1051 \u1072 \u1073 \u1086 \u1088 \u1072 \u1090 \u1086 \u1088 \u1110 \u1111 \
+DROP TABLE IF EXISTS laboratory;\
+CREATE TABLE IF NOT EXISTS laboratory (\
+    lab_id INT AUTO_INCREMENT PRIMARY KEY,\
+    name VARCHAR(255),\
+    specialization VARCHAR(255),\
+    address VARCHAR(255)\
+);\
+\
+-- \uc0\u1051 \u1072 \u1073 \u1086 \u1088 \u1072 \u1090 \u1086 \u1088 \u1085 \u1110  \u1090 \u1077 \u1089 \u1090 \u1080 \
+DROP TABLE IF EXISTS laboratory_test;\
+CREATE TABLE IF NOT EXISTS laboratory_test (\
+    test_id INT AUTO_INCREMENT PRIMARY KEY,\
+    lab_id INT,\
+    test_name VARCHAR(255),\
+    test_date DATE,\
+    patient_id INT,\
+    hospital_id INT,\
+    clinic_id INT,\
+    FOREIGN KEY (lab_id) REFERENCES laboratory(lab_id),\
+    FOREIGN KEY (patient_id) REFERENCES patient(patient_id),\
+    FOREIGN KEY (hospital_id) REFERENCES hospital(hospital_id),\
+    FOREIGN KEY (clinic_id) REFERENCES clinic(clinic_id)\
+);\
+\
+-- \uc0\u1050 \u1086 \u1085 \u1090 \u1088 \u1072 \u1082 \u1090 \u1080  \u1083 \u1072 \u1073 \u1086 \u1088 \u1072 \u1090 \u1086 \u1088 \u1110 \u1111 \
+DROP TABLE IF EXISTS laboratory_contracts;\
+CREATE TABLE IF NOT EXISTS laboratory_contracts (\
+    contract_id INT AUTO_INCREMENT PRIMARY KEY,\
+    lab_id INT,\
+    hospital_id INT NULL,\
+    clinic_id INT NULL,\
+    is_active BOOLEAN,\
+    FOREIGN KEY (lab_id) REFERENCES laboratory(lab_id),\
+    FOREIGN KEY (hospital_id) REFERENCES hospital(hospital_id),\
+    FOREIGN KEY (clinic_id) REFERENCES clinic(clinic_id)\
+);\
+\pard\pardeftab720\partightenfactor0
+\cf0 \
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardirnatural\partightenfactor0
+\cf0 -- \uc0\u1053 \u1072 \u1087 \u1088 \u1072 \u1074 \u1083 \u1077 \u1085 \u1085 \u1103 \
+DROP TABLE IF NOT EXISTS referral;\
+CREATE TABLE IF NOT EXISTS referral (\
+    id INT AUTO_INCREMENT PRIMARY KEY,\
+    from_polyclinic_id INT,\
+    to_hospital_id INT,\
+    patient_id INT,\
+    specialization VARCHAR(255),\
+    referral_date DATE,\
+    FOREIGN KEY (from_polyclinic_id) REFERENCES clinic(clinic_id),\
+    FOREIGN KEY (to_hospital_id) REFERENCES hospital(hospital_id),\
+    FOREIGN KEY (patient_id) REFERENCES patient(patient_id)\
+);\
+\
+-- \uc0\u1047 \u1072 \u1087 \u1080 \u1089 \u1080  \u1087 \u1072 \u1094 \u1110 \u1108 \u1085 \u1090 \u1110 \u1074 \
+DROP TABLE IF EXISTS patient_records;\
+CREATE TABLE IF NOT EXISTS patient_records (\
+    record_id INT AUTO_INCREMENT PRIMARY KEY,\
+    patient_id INT NOT NULL,\
+    hospital_id INT,\
+    clinic_id INT,\
+    date_of_entry DATE NOT NULL,\
+    disease VARCHAR(255) NOT NULL,\
+    doctor_id INT NOT NULL,\
+    treatment_type VARCHAR(255) NOT NULL,\
+    cabinet_id INT,\
+    referral_to_hospital_id INT,\
+    treatment_start_at DATE,\
+    treatment_end_at DATE,\
+    building_id INT,\
+    department_id INT,\
+    ward_id INT,\
+    bed_id INT,\
+    temperature_when_entered FLOAT,\
+    FOREIGN KEY (patient_id) REFERENCES patient(patient_id),\
+    FOREIGN KEY (hospital_id) REFERENCES hospital(hospital_id),\
+    FOREIGN KEY (clinic_id) REFERENCES clinic(clinic_id),\
+    FOREIGN KEY (doctor_id) REFERENCES doctor(doctor_id),\
+    FOREIGN KEY (referral_to_hospital_id) REFERENCES referral(id),\
+    FOREIGN KEY (building_id) REFERENCES building(building_id),\
+    FOREIGN KEY (department_id) REFERENCES department(department_id),\
+    FOREIGN KEY (ward_id) REFERENCES ward(ward_id),\
+    FOREIGN KEY (bed_id) REFERENCES bed(bed_id)\
+);\
+\
+\
+-- \uc0\u1050 \u1072 \u1073 \u1110 \u1085 \u1077 \u1090 \u1080  \u1082 \u1083 \u1110 \u1085 \u1110 \u1082 \u1080 \
+DROP TABLE IF EXISTS cabinets;\
+CREATE TABLE IF NOT EXISTS cabinets (\
+    cabinet_id INT AUTO_INCREMENT PRIMARY KEY,\
+    clinic_id INT,\
+    FOREIGN KEY (clinic_id) REFERENCES clinic(clinic_id)\
+);\
+\
+\
+\
+\'97INSERTING DATA INTO TABLES\
+\
+-- \uc0\u1047 \u1072 \u1087 \u1086 \u1074 \u1085 \u1077 \u1085 \u1085 \u1103  \u1090 \u1072 \u1073 \u1083 \u1080 \u1094 \u1110  hospital\
+INSERT INTO hospital (name, address, specialization) VALUES\
+('Central City Hospital', '123 Main St', 'General'),\
+('Regional Hospital', '456 Regional Rd', 'Trauma and Emergency');\
+\
+-- \uc0\u1047 \u1072 \u1087 \u1086 \u1074 \u1085 \u1077 \u1085 \u1085 \u1103  \u1090 \u1072 \u1073 \u1083 \u1080 \u1094 \u1110  building\
+INSERT INTO building (hospital_id, name, address) VALUES\
+(1, 'Main Building', '123 Main St'),\
+(1, 'Surgery Building', '125 Main St'),\
+(2, 'Emergency Building', '456 Regional Rd'),\
+(2, 'Trauma Building', '458 Regional Rd');\
+\
+-- \uc0\u1047 \u1072 \u1087 \u1086 \u1074 \u1085 \u1077 \u1085 \u1085 \u1103  \u1090 \u1072 \u1073 \u1083 \u1080 \u1094 \u1110  department\
+INSERT INTO department (building_id, name, specialization) VALUES\
+(1, 'General Medicine', 'General Treatment'),\
+(1, 'Cardiology', 'Heart Diseases'),\
+(2, 'Surgery', 'Surgeries'),\
+(3, 'Emergency', 'Emergency Treatment'),\
+(4, 'Trauma', 'Trauma Treatment');\
+\
+-- \uc0\u1047 \u1072 \u1087 \u1086 \u1074 \u1085 \u1077 \u1085 \u1085 \u1103  \u1090 \u1072 \u1073 \u1083 \u1080 \u1094 \u1110  ward\
+INSERT INTO ward (department_id, capacity, filled_status) VALUES\
+(1, 30, 20), (1, 30, 15), -- \uc0\u1047 \u1073 \u1110 \u1083 \u1100 \u1096 \u1077 \u1085 \u1086  \u1082 \u1110 \u1083 \u1100 \u1082 \u1110 \u1089 \u1090 \u1100  \u1087 \u1072 \u1083 \u1072 \u1090 \
+(2, 20, 15), (2, 20, 10), -- \uc0\u1047 \u1073 \u1110 \u1083 \u1100 \u1096 \u1077 \u1085 \u1086  \u1082 \u1110 \u1083 \u1100 \u1082 \u1110 \u1089 \u1090 \u1100  \u1087 \u1072 \u1083 \u1072 \u1090 \
+(3, 10, 8), (3, 10, 6),  -- \uc0\u1047 \u1073 \u1110 \u1083 \u1100 \u1096 \u1077 \u1085 \u1086  \u1082 \u1110 \u1083 \u1100 \u1082 \u1110 \u1089 \u1090 \u1100  \u1087 \u1072 \u1083 \u1072 \u1090 \
+(4, 25, 18), (4, 25, 12), -- \uc0\u1047 \u1073 \u1110 \u1083 \u1100 \u1096 \u1077 \u1085 \u1086  \u1082 \u1110 \u1083 \u1100 \u1082 \u1110 \u1089 \u1090 \u1100  \u1087 \u1072 \u1083 \u1072 \u1090 \
+(5, 15, 12), (5, 15, 10); -- \uc0\u1047 \u1073 \u1110 \u1083 \u1100 \u1096 \u1077 \u1085 \u1086  \u1082 \u1110 \u1083 \u1100 \u1082 \u1110 \u1089 \u1090 \u1100  \u1087 \u1072 \u1083 \u1072 \u1090 \
+\
+-- \uc0\u1047 \u1072 \u1087 \u1086 \u1074 \u1085 \u1077 \u1085 \u1085 \u1103  \u1090 \u1072 \u1073 \u1083 \u1080 \u1094 \u1110  bed\
+INSERT INTO bed (ward_id, is_occupied) VALUES\
+(1, TRUE), (1, FALSE), (1, TRUE), (1, FALSE), (1, TRUE), (1, FALSE),\
+(2, TRUE), (2, FALSE), (2, TRUE), (2, FALSE), (2, TRUE), (2, FALSE),\
+(3, TRUE), (3, FALSE), (3, TRUE), (3, FALSE), (3, TRUE), (3, FALSE),\
+(4, TRUE), (4, FALSE), (4, TRUE), (4, FALSE), (4, TRUE), (4, FALSE),\
+(5, TRUE), (5, FALSE), (5, TRUE), (5, FALSE), (5, TRUE), (5, FALSE),\
+(6, TRUE), (6, FALSE), (6, TRUE), (6, FALSE), (6, TRUE), (6, FALSE),\
+(7, TRUE), (7, FALSE), (7, TRUE), (7, FALSE), (7, TRUE), (7, FALSE),\
+(8, TRUE), (8, FALSE), (8, TRUE), (8, FALSE), (8, TRUE), (8, FALSE),\
+(9, TRUE), (9, FALSE), (9, TRUE), (9, FALSE), (9, TRUE), (9, FALSE),\
+(10, TRUE), (10, FALSE), (10, TRUE), (10, FALSE), (10, TRUE), (10, FALSE);\
+\
+-- \uc0\u1047 \u1072 \u1087 \u1086 \u1074 \u1085 \u1077 \u1085 \u1085 \u1103  \u1090 \u1072 \u1073 \u1083 \u1080 \u1094 \u1110  clinic\
+INSERT INTO clinic (hospital_id, name) VALUES\
+(1, 'Downtown Polyclinic'),\
+(2, 'Eastside Polyclinic'),\
+(NULL, 'Independent Polyclinic');\
+\
+-- \uc0\u1047 \u1072 \u1087 \u1086 \u1074 \u1085 \u1077 \u1085 \u1085 \u1103  \u1090 \u1072 \u1073 \u1083 \u1080 \u1094 \u1110  cabinets\
+INSERT INTO cabinets (clinic_id) VALUES\
+(1), (1), (1), (1), -- \uc0\u1047 \u1073 \u1110 \u1083 \u1100 \u1096 \u1077 \u1085 \u1086  \u1082 \u1110 \u1083 \u1100 \u1082 \u1110 \u1089 \u1090 \u1100  \u1082 \u1072 \u1073 \u1110 \u1085 \u1077 \u1090 \u1110 \u1074 \
+(2), (2), (2), (2), -- \uc0\u1047 \u1073 \u1110 \u1083 \u1100 \u1096 \u1077 \u1085 \u1086  \u1082 \u1110 \u1083 \u1100 \u1082 \u1110 \u1089 \u1090 \u1100  \u1082 \u1072 \u1073 \u1110 \u1085 \u1077 \u1090 \u1110 \u1074 \
+(3), (3), (3), (3); -- \uc0\u1047 \u1073 \u1110 \u1083 \u1100 \u1096 \u1077 \u1085 \u1086  \u1082 \u1110 \u1083 \u1100 \u1082 \u1110 \u1089 \u1090 \u1100  \u1082 \u1072 \u1073 \u1110 \u1085 \u1077 \u1090 \u1110 \u1074 \
+\
+\
+-- Fill the staff table\
+INSERT INTO staff (name, age, role, work_experience) VALUES\
+('John Doe', 45, 'Nurse', 20),\
+('Mary Smith', 38, 'Orderly', 15),\
+('Helen Brown', 30, 'Cleaner', 8),\
+('Alexander White', 50, 'Nurse', 25),\
+('Natalie Green', 28, 'Orderly', 6),\
+('Victoria Black', 42, 'Cleaner', 12),\
+('Andrew Adams', 35, 'Nurse', 10),\
+('Svetlana Clark', 47, 'Orderly', 22),\
+('Dmitry Hall', 33, 'Cleaner', 7),\
+('Ludmila Allen', 41, 'Nurse', 18),\
+('Vladimir Young', 29, 'Orderly', 5),\
+('Anna King', 36, 'Cleaner', 9),\
+('Oleg Scott', 39, 'Nurse', 14),\
+('Tatiana Turner', 48, 'Orderly', 23),\
+('Michael Carter', 34, 'Cleaner', 11);\
+\
+-- Fill the doctor table\
+INSERT INTO doctor (name, specialization, work_experience_in_years, degree, can_work_in_many_institutions, age, num_of_operations, num_of_fatal_operations, salary_coef_for_harmful_conditions, extra_vacation_days) VALUES\
+('Dr. John Smith', 'Surgeon', 20, 'PhD', TRUE, 50, 300, 5, NULL, NULL),\
+('Dr. Emily Johnson', 'Surgeon', 15, 'MD', FALSE, 40, 250, 2, NULL, NULL),\
+('Dr. Michael Brown', 'Gynecologist', 25, 'PhD', TRUE, 55, 400, 1, NULL, NULL),\
+('Dr. Sarah Davis', 'Dentist', 18, 'PhD', TRUE, 45, 200, 0, 1.2, NULL),\
+('Dr. William Wilson', 'Radiologist', 22, 'MD', FALSE, 48, NULL, NULL, 1.3, 30),\
+('Dr. Linda Martinez', 'Neurologist', 17, 'MD', FALSE, 43, NULL, NULL, NULL, 30),\
+('Dr. James Anderson', 'Surgeon', 30, 'PhD', TRUE, 60, 500, 10, NULL, NULL),\
+('Dr. Barbara Taylor', 'Gynecologist', 12, 'MD', FALSE, 38, 150, 0, NULL, NULL),\
+('Dr. Robert Thomas', 'Dentist', 14, 'MD', FALSE, 41, 180, 0, 1.2, NULL),\
+('Dr. Patricia Jackson', 'Radiologist', 19, 'MD', FALSE, 44, NULL, NULL, 1.3, 30),\
+('Dr. Charles Harris', 'Neurologist', 16, 'MD', FALSE, 42, NULL, NULL, NULL, 30),\
+('Dr. Christopher Walker', 'Surgeon', 10, 'MD', FALSE, 35, 100, 0, NULL, NULL),\
+('Dr. Karen Lee', 'Gynecologist', 20, 'PhD', TRUE, 46, 300, 2, NULL, NULL),\
+('Dr. Daniel Hall', 'Dentist', 11, 'MD', FALSE, 36, 120, 0, 1.2, NULL),\
+('Dr. Jennifer Young', 'Radiologist', 23, 'MD', FALSE, 50, NULL, NULL, 1.3, 30);\
+\
+-- Fill the employment table\
+INSERT INTO employment (staff_id, doctor_id, name, hospital_id, clinic_id, is_active) VALUES\
+-- Staff employment\
+(1, NULL, 'John Doe', 1, NULL, TRUE),\
+(2, NULL, 'Mary Smith', 1, NULL, TRUE),\
+(3, NULL, 'Helen Brown', 1, NULL, TRUE),\
+(4, NULL, 'Alexander White', 1, NULL, TRUE),\
+(5, NULL, 'Natalie Green', 1, NULL, TRUE),\
+(6, NULL, 'Victoria Black', 2, NULL, TRUE),\
+(7, NULL, 'Andrew Adams', 2, NULL, TRUE),\
+(8, NULL, 'Svetlana Clark', 2, NULL, TRUE),\
+(9, NULL, 'Dmitry Hall', 2, NULL, TRUE),\
+(10, NULL, 'Ludmila Allen', 2, NULL, TRUE),\
+(11, NULL, 'Vladimir Young', NULL, 1, TRUE),\
+(12, NULL, 'Anna King', NULL, 1, TRUE),\
+(13, NULL, 'Oleg Scott', NULL, 2, TRUE),\
+(14, NULL, 'Tatiana Turner', NULL, 2, TRUE),\
+(15, NULL, 'Michael Carter', NULL, 3, TRUE),\
+\
+-- Doctor employment\
+(NULL, 1, 'Dr. John Smith', 1, NULL, TRUE),\
+(NULL, 1, 'Dr. John Smith', 2, NULL, TRUE),\
+(NULL, 1, 'Dr. John Smith', 1, 1, TRUE),\
+(NULL, 2, 'Dr. Emily Johnson', 1, NULL, TRUE),\
+(NULL, 3, 'Dr. Michael Brown', 1, NULL, TRUE),\
+(NULL, 3, 'Dr. Michael Brown', 2, NULL, TRUE),\
+(NULL, 3, 'Dr. Michael Brown', 2, 2, TRUE),\
+(NULL, 4, 'Dr. Sarah Davis', 1, NULL, TRUE),\
+(NULL, 5, 'Dr. William Wilson', NULL, 1, TRUE),\
+(NULL, 5, 'Dr. William Wilson', NULL, 2, TRUE),\
+(NULL, 5, 'Dr. William Wilson', 1, 2, TRUE),\
+(NULL, 6, 'Dr. Linda Martinez', NULL, 2, TRUE),\
+(NULL, 7, 'Dr. James Anderson', 1, NULL, TRUE),\
+(NULL, 7, 'Dr. James Anderson', 2, NULL, TRUE),\
+(NULL, 7, 'Dr. James Anderson', 1, 3, TRUE),\
+(NULL, 8, 'Dr. Barbara Taylor', 2, NULL, TRUE),\
+(NULL, 9, 'Dr. Robert Thomas', NULL, 1, TRUE),\
+(NULL, 10, 'Dr. Patricia Jackson', NULL, 2, TRUE),\
+(NULL, 11, 'Dr. Charles Harris', NULL, 2, TRUE),\
+(NULL, 12, 'Dr. Christopher Walker', 1, NULL, TRUE),\
+(NULL, 13, 'Dr. Karen Lee', 1, NULL, TRUE),\
+(NULL, 13, 'Dr. Karen Lee', 2, NULL, TRUE),\
+(NULL, 13, 'Dr. Karen Lee', 1, 3, TRUE),\
+(NULL, 14, 'Dr. Daniel Hall', NULL, 1, TRUE),\
+(NULL, 15, 'Dr. Jennifer Young', NULL, 3, TRUE);\
+\
+\
+-- Fill the patients table\
+INSERT INTO patient (name, date_of_birth, address) VALUES\
+('John Doe', '1985-01-15', '123 Main St'),\
+('Jane Smith', '1990-02-20', '456 Elm St'),\
+('Robert Johnson', '1982-03-25', '789 Maple St'),\
+('Linda Brown', '1975-04-30', '101 Pine St'),\
+('Michael Davis', '1988-05-05', '202 Oak St'),\
+('Emily Garcia', '1992-06-10', '303 Cedar St'),\
+('James Martinez', '1979-07-15', '404 Birch St'),\
+('Sarah Rodriguez', '1983-08-20', '505 Spruce St'),\
+('David Wilson', '1991-09-25', '606 Walnut St'),\
+('Laura Moore', '1987-10-30', '707 Cherry St'),\
+('Richard Taylor', '1984-11-05', '808 Chestnut St'),\
+('Susan Anderson', '1978-12-10', '909 Hickory St'),\
+('Charles Thomas', '1981-01-15', '111 Ash St'),\
+('Jessica Jackson', '1993-02-20', '222 Willow St'),\
+('Christopher White', '1989-03-25', '333 Poplar St'),\
+('Karen Harris', '1976-04-30', '444 Fir St'),\
+('Matthew Martin', '1990-05-05', '555 Redwood St'),\
+('Patricia Thompson', '1985-06-10', '666 Cypress St'),\
+('Joshua Lee', '1980-07-15', '777 Alder St'),\
+('Elizabeth King', '1994-08-20', '888 Hemlock St'),\
+('Andrew Scott', '1986-09-25', '999 Magnolia St'),\
+('Barbara Green', '1983-10-30', '121 Maple St'),\
+('Daniel Adams', '1991-11-05', '234 Oak St'),\
+('Nancy Baker', '1979-12-10', '345 Cedar St'),\
+('Paul Gonzalez', '1987-01-15', '456 Birch St'),\
+('Sandra Nelson', '1992-02-20', '567 Spruce St'),\
+('Steven Carter', '1984-03-25', '678 Walnut St'),\
+('Betty Mitchell', '1988-04-30', '789 Cherry St'),\
+('George Perez', '1990-05-05', '890 Chestnut St'),\
+('Donna Roberts', '1985-06-10', '901 Hickory St');\
+\
+-- Fill the referral table\
+INSERT INTO referral (from_polyclinic_id, to_hospital_id, patient_id, specialization, referral_date) VALUES\
+(1, 1, 1, 'Cardiology', '2024-01-10'),\
+(2, 2, 2, 'Neurology', '2024-01-15'),\
+(3, 1, 3, 'Surgery', '2024-01-20'),\
+(1, 2, 4, 'Orthopedics', '2024-01-25'),\
+(2, 1, 5, 'Pediatrics', '2024-02-01'),\
+(3, 2, 6, 'Radiology', '2024-02-05'),\
+(1, 1, 7, 'Gynecology', '2024-02-10'),\
+(2, 2, 8, 'Dermatology', '2024-02-15'),\
+(3, 1, 9, 'Gastroenterology', '2024-02-20'),\
+(1, 2, 10, 'Urology', '2024-02-25');\
+\
+-- Records for patients treated in hospitals\
+INSERT INTO patient_records (patient_id, hospital_id, clinic_id, date_of_entry, disease, doctor_id, treatment_type, cabinet_id, referral_to_hospital_id, treatment_start_at, treatment_end_at, building_id, department_id, ward_id, bed_id, temperature_when_entered) VALUES\
+(1, 1, NULL, '2024-03-01', 'Heart Disease', 1, 'Surgery', NULL, 1, '2024-03-01', '2024-03-10', 1, 1, 1, 1, 37.5),\
+(2, 2, NULL, '2024-03-05', 'Neurological Disorder', 2, 'Therapy', NULL, 2, '2024-03-05', '2024-03-12', 3, 2, 3, 5, 38.0),\
+(3, 1, NULL, '2024-03-10', 'Surgical Procedure', 3, 'Surgery', NULL, 3, '2024-03-10', '2024-03-20', 2, 3, 5, 9, 37.8),\
+(4, 2, NULL, '2024-03-15', 'Orthopedic Surgery', 4, 'Surgery', NULL, 4, '2024-03-15', '2024-03-25', 4, 4, 7, 13, 36.9),\
+(5, 1, NULL, '2024-03-20', 'Pediatric Treatment', 5, 'Medication', NULL, 5, '2024-03-20', '2024-03-30', 1, 1, 1, 1, 37.2),\
+(6, 2, NULL, '2024-03-25', 'Radiological Exam', 6, 'Therapy', NULL, 6, '2024-03-25', '2024-04-05', 3, 2, 3, 5, 38.2),\
+(7, 1, NULL, '2024-03-30', 'Gynecological Treatment', 7, 'Medication', NULL, 7, '2024-03-30', '2024-04-10', 2, 3, 5, 9, 37.7),\
+(8, 2, NULL, '2024-04-01', 'Dermatological Treatment', 8, 'Therapy', NULL, 8, '2024-04-01', '2024-04-15', 4, 4, 7, 13, 36.8),\
+(9, 1, NULL, '2024-04-05', 'Gastroenterological Treatment', 9, 'Medication', NULL, 9, '2024-04-05', '2024-04-20', 1, 1, 1, 1, 37.4),\
+(10, 2, NULL, '2024-04-10', 'Urological Treatment', 10, 'Surgery', NULL, 10, '2024-04-10', '2024-04-25', 3, 2, 3, 5, 37.9);\
+\
+-- Records for patients treated in clinics\
+INSERT INTO patient_records (patient_id, hospital_id, clinic_id, date_of_entry, disease, doctor_id, treatment_type, cabinet_id, referral_to_hospital_id, treatment_start_at, treatment_end_at, building_id, department_id, ward_id, bed_id, temperature_when_entered) VALUES\
+(1, NULL, 1, '2024-03-01', 'Flu', 11, 'Consultation', 1, NULL, '2024-03-01', '2024-03-03', NULL, NULL, NULL, NULL, NULL),\
+(2, NULL, 2, '2024-03-05', 'Cold', 12, 'Medication', 2, NULL, '2024-03-05', '2024-03-06', NULL, NULL, NULL, NULL, NULL),\
+(3, NULL, 1, '2024-03-10', 'Toothache', 13, 'Therapy', 3, NULL, '2024-03-10', '2024-03-11', NULL, NULL, NULL, NULL, NULL),\
+(4, NULL, 2, '2024-03-15', 'Skin Rash', 14, 'Consultation', 4, NULL, '2024-03-15', '2024-03-16', NULL, NULL, NULL, NULL, NULL),\
+(5, NULL, 3, '2024-03-20', 'Migraine', 15, 'Therapy', 5, NULL, '2024-03-20', '2024-03-21', NULL, NULL, NULL, NULL, NULL),\
+(6, NULL, 1, '2024-03-25', 'Back Pain', 11, 'Consultation', 6, NULL, '2024-03-25', '2024-03-26', NULL, NULL, NULL, NULL, NULL),\
+(7, NULL, 2, '2024-03-30', 'Allergy', 12, 'Medication', 7, NULL, '2024-03-30', '2024-03-31', NULL, NULL, NULL, NULL, NULL),\
+(8, NULL, 3, '2024-04-01', 'Stomachache', 13, 'Therapy', 8, NULL, '2024-04-01', '2024-04-02', NULL, NULL, NULL, NULL, NULL),\
+(9, NULL, 1, '2024-04-05', 'Ear Infection', 14, 'Medication', 9, NULL, '2024-04-05', '2024-04-06', NULL, NULL, NULL, NULL, NULL),\
+(10, NULL, 2, '2024-04-10', 'Sore Throat', 15, 'Consultation', 10, NULL, '2024-04-10', '2024-04-11', NULL, NULL, NULL, NULL, NULL);\
+\
+\
+\
+-- Fill the laboratory table\
+INSERT INTO laboratory (name, specialization, address) VALUES\
+('BioLab', 'Biochemical', '123 Bio St'),\
+('PhysioLab', 'Physiological', '456 Physio Rd'),\
+('ChemLab', 'Chemical', '789 Chem Ave'),\
+('AdvancedLab', 'Biochemical, Physiological', '101 Advanced Blvd'),\
+('GeneralLab', 'Biochemical, Chemical', '202 General Ln');\
+\
+\
+-- Fill the laboratory_contracts table\
+INSERT INTO laboratory_contracts (lab_id, hospital_id, clinic_id, is_active) VALUES\
+(1, 1, NULL, TRUE), -- BioLab has a contract with Central City Hospital\
+(1, 2, NULL, TRUE), -- BioLab has a contract with Regional Hospital\
+(2, 1, NULL, TRUE), -- PhysioLab has a contract with Central City Hospital\
+(3, NULL, 1, TRUE), -- ChemLab has a contract with Downtown Polyclinic\
+(3, NULL, 2, TRUE), -- ChemLab has a contract with Eastside Polyclinic\
+(4, 2, NULL, TRUE), -- AdvancedLab has a contract with Regional Hospital\
+(4, NULL, 3, TRUE), -- AdvancedLab has a contract with Independent Polyclinic\
+(5, 1, NULL, TRUE), -- GeneralLab has a contract with Central City Hospital\
+(5, NULL, 3, TRUE); -- GeneralLab has a contract with Independent Polyclinic\
+\
+\
+-- Fill the laboratory_test table\
+INSERT INTO laboratory_test (lab_id, test_name, test_date, patient_id, hospital_id, clinic_id) VALUES\
+(1, 'Blood Test', '2024-01-10', 1, 1, NULL),\
+(1, 'Urine Test', '2024-01-15', 2, 2, NULL),\
+(2, 'Stress Test', '2024-01-20', 3, 1, NULL),\
+(3, 'Chemical Analysis', '2024-01-25', 4, NULL, 1),\
+(3, 'Toxicology', '2024-02-01', 5, NULL, 2),\
+(4, 'Comprehensive Test', '2024-02-05', 6, 2, NULL),\
+(4, 'Hormone Test', '2024-02-10', 7, NULL, 3),\
+(5, 'Basic Metabolic Panel', '2024-02-15', 8, 1, NULL),\
+(5, 'Complete Blood Count', '2024-02-20', 9, NULL, 3),\
+(1, 'Blood Test', '2024-02-25', 10, 1, NULL),\
+(2, 'Cardiac Stress Test', '2024-03-01', 11, 1, NULL),\
+(3, 'Chemical Analysis', '2024-03-05', 12, NULL, 1),\
+(4, 'Hormone Test', '2024-03-10', 13, NULL, 3),\
+(5, 'Basic Metabolic Panel', '2024-03-15', 14, 1, NULL),\
+(1, 'Urine Test', '2024-03-20', 15, 2, NULL);\
+\
+\
+PROCEDURES\
+\
+\
+DROP PROCEDURE IF EXISTS get_doctors_by_specialization;\
+DELIMITER $$\
+CREATE PROCEDURE IF NOT EXISTS get_doctors_by_specialization(IN prof VARCHAR(255), IN institution_id INT, IN institution_type VARCHAR(255))\
+BEGIN\
+    IF institution_id IS NULL THEN\
+        SELECT DISTINCT d.name, d.specialization\
+        FROM doctor d\
+        JOIN employment e ON d.doctor_id = e.doctor_id\
+        WHERE d.specialization = prof\
+        \
+        UNION\
+        \
+        SELECT 'TOTAL DOCTORS' AS name, COUNT(*) AS specialization\
+        FROM (\
+            SELECT DISTINCT d.name, d.specialization\
+            FROM doctor d\
+            JOIN employment e ON d.doctor_id = e.doctor_id\
+            WHERE d.specialization = prof\
+        ) AS subquery;\
+    ELSEIF institution_type = 'hospital' THEN\
+        SELECT DISTINCT d.name, d.specialization\
+        FROM doctor d\
+        JOIN employment e ON d.doctor_id = e.doctor_id\
+        WHERE d.specialization = prof AND e.hospital_id = institution_id\
+        \
+        UNION\
+        \
+        SELECT 'TOTAL DOCTORS' AS name, COUNT(*) AS specialization\
+        FROM (\
+            SELECT DISTINCT d.name, d.specialization\
+            FROM doctor d\
+            JOIN employment e ON d.doctor_id = e.doctor_id\
+            WHERE d.specialization = prof AND e.hospital_id = institution_id\
+        ) AS subquery;\
+    ELSEIF institution_type = 'clinic' THEN\
+        SELECT DISTINCT d.name, d.specialization\
+        FROM doctor d\
+        JOIN employment e ON d.doctor_id = e.doctor_id\
+        WHERE d.specialization = prof AND e.clinic_id = institution_id\
+        \
+        UNION\
+        \
+        SELECT 'TOTAL DOCTORS' AS name, COUNT(*) AS specialization\
+        FROM (\
+            SELECT DISTINCT d.name, d.specialization\
+            FROM doctor d\
+            JOIN employment e ON d.doctor_id = e.doctor_id\
+            WHERE d.specialization = prof AND e.clinic_id = institution_id\
+        ) AS subquery;\
+    END IF;\
+END$$\
+DELIMITER ;\
+\
+-- \uc0\u1058 \u1077 \u1089 \u1090 \u1091 \u1074 \u1072 \u1085 \u1085 \u1103  \u1087 \u1088 \u1086 \u1094 \u1077 \u1076 \u1091 \u1088 \u1080 \
+CALL get_doctors_by_specialization('Surgeon', 1, 'hospital');\
+CALL get_doctors_by_specialization('Surgeon', 1, 'clinic');\
+CALL get_doctors_by_specialization('Surgeon', NULL, NULL);\
+\
+\
+\
+DROP PROCEDURE IF EXISTS get_staff_by_role;\
+DELIMITER $$\
+CREATE PROCEDURE IF NOT EXISTS get_staff_by_role(IN role VARCHAR(255), IN institution_id INT, IN institution_type VARCHAR(255))\
+BEGIN\
+    IF institution_id IS NULL THEN\
+        SELECT DISTINCT s.name, s.role\
+        FROM staff s\
+        JOIN employment e ON s.staff_id = e.staff_id\
+        WHERE s.role = role\
+        \
+        UNION\
+        \
+        SELECT 'TOTAL STAFF' AS name, COUNT(*) AS role\
+        FROM (\
+            SELECT DISTINCT s.name, s.role\
+            FROM staff s\
+            JOIN employment e ON s.staff_id = e.staff_id\
+            WHERE s.role = role\
+        ) AS subquery;\
+    ELSEIF institution_type = 'hospital' THEN\
+        SELECT DISTINCT s.name, s.role\
+        FROM staff s\
+        JOIN employment e ON s.staff_id = e.staff_id\
+        WHERE s.role = role AND e.hospital_id = institution_id\
+        \
+        UNION\
+        \
+        SELECT 'TOTAL STAFF' AS name, COUNT(*) AS role\
+        FROM (\
+            SELECT DISTINCT s.name, s.role\
+            FROM staff s\
+            JOIN employment e ON s.staff_id = e.staff_id\
+            WHERE s.role = role AND e.hospital_id = institution_id\
+        ) AS subquery;\
+    ELSEIF institution_type = 'clinic' THEN\
+        SELECT DISTINCT s.name, s.role\
+        FROM staff s\
+        JOIN employment e ON s.staff_id = e.staff_id\
+        WHERE s.role = role AND e.clinic_id = institution_id\
+        \
+        UNION\
+        \
+        SELECT 'TOTAL STAFF' AS name, COUNT(*) AS role\
+        FROM (\
+            SELECT DISTINCT s.name, s.role\
+            FROM staff s\
+            JOIN employment e ON s.staff_id = e.staff_id\
+            WHERE s.role = role AND e.clinic_id = institution_id\
+        ) AS subquery;\
+    END IF;\
+END$$\
+DELIMITER ;\
+\
+-- \uc0\u1058 \u1077 \u1089 \u1090 \u1091 \u1074 \u1072 \u1085 \u1085 \u1103  \u1087 \u1088 \u1086 \u1094 \u1077 \u1076 \u1091 \u1088 \u1080 \
+CALL get_staff_by_role('Nurse', 1, 'hospital');\
+CALL get_staff_by_role('Nurse', 1, 'clinic');\
+CALL get_staff_by_role('Nurse', NULL, NULL);\
+\
+\
+\
+\
+DROP PROCEDURE IF EXISTS get_doctors_by_operations;\
+DELIMITER $$\
+CREATE PROCEDURE IF NOT EXISTS get_doctors_by_operations(IN prof VARCHAR(255), IN min_operations INT, IN institution_id INT, IN institution_type VARCHAR(255))\
+BEGIN\
+    IF institution_id IS NULL THEN\
+        SELECT DISTINCT d.name, d.specialization, d.num_of_operations\
+        FROM doctor d\
+        JOIN employment e ON d.doctor_id = e.doctor_id\
+        WHERE d.specialization = prof AND d.num_of_operations >= min_operations\
+        \
+        UNION\
+        \
+        SELECT 'TOTAL DOCTORS' AS name, COUNT(*) AS num_of_operations, NULL AS specialization\
+        FROM (\
+            SELECT DISTINCT d.name, d.specialization, d.num_of_operations\
+            FROM doctor d\
+            JOIN employment e ON d.doctor_id = e.doctor_id\
+            WHERE d.specialization = prof AND d.num_of_operations >= min_operations\
+        ) AS subquery;\
+    ELSEIF institution_type = 'hospital' THEN\
+        SELECT DISTINCT d.name, d.specialization, d.num_of_operations\
+        FROM doctor d\
+        JOIN employment e ON d.doctor_id = e.doctor_id\
+        WHERE d.specialization = prof AND d.num_of_operations >= min_operations AND e.hospital_id = institution_id\
+        \
+        UNION\
+        \
+        SELECT 'TOTAL DOCTORS' AS name, COUNT(*) AS num_of_operations, NULL AS specialization\
+        FROM (\
+            SELECT DISTINCT d.name, d.specialization, d.num_of_operations\
+            FROM doctor d\
+            JOIN employment e ON d.doctor_id = e.doctor_id\
+            WHERE d.specialization = prof AND d.num_of_operations >= min_operations AND e.hospital_id = institution_id\
+        ) AS subquery;\
+    ELSEIF institution_type = 'clinic' THEN\
+        SELECT DISTINCT d.name, d.specialization, d.num_of_operations\
+        FROM doctor d\
+        JOIN employment e ON d.doctor_id = e.doctor_id\
+        WHERE d.specialization = prof AND d.num_of_operations >= min_operations AND e.clinic_id = institution_id\
+        \
+        UNION\
+        \
+        SELECT 'TOTAL DOCTORS' AS name, COUNT(*) AS num_of_operations, NULL AS specialization\
+        FROM (\
+            SELECT DISTINCT d.name, d.specialization, d.num_of_operations\
+            FROM doctor d\
+            JOIN employment e ON d.doctor_id = e.doctor_id\
+            WHERE d.specialization = prof AND d.num_of_operations >= min_operations AND e.clinic_id = institution_id\
+        ) AS subquery;\
+    END IF;\
+END$$\
+DELIMITER ;\
+\
+-- \uc0\u1058 \u1077 \u1089 \u1090 \u1091 \u1074 \u1072 \u1085 \u1085 \u1103  \u1087 \u1088 \u1086 \u1094 \u1077 \u1076 \u1091 \u1088 \u1080 \
+CALL get_doctors_by_operations('Surgeon', 100, 1, 'hospital');\
+CALL get_doctors_by_operations('Surgeon', 100, 1, 'clinic');\
+CALL get_doctors_by_operations('Surgeon', 100, NULL, NULL);\
+\
+\
+DROP PROCEDURE IF EXISTS get_doctors_by_experience;\
+DELIMITER $$\
+CREATE PROCEDURE IF NOT EXISTS get_doctors_by_experience(IN prof VARCHAR(255), IN min_experience INT, IN institution_id INT, IN institution_type VARCHAR(255))\
+BEGIN\
+    IF institution_id IS NULL THEN\
+        SELECT DISTINCT d.name, d.specialization, d.work_experience_in_years\
+        FROM doctor d\
+        JOIN employment e ON d.doctor_id = e.doctor_id\
+        WHERE d.specialization = prof AND d.work_experience_in_years >= min_experience\
+        \
+        UNION\
+        \
+        SELECT 'TOTAL DOCTORS' AS name, COUNT(*) AS work_experience_in_years, NULL AS specialization\
+        FROM (\
+            SELECT DISTINCT d.name, d.specialization, d.work_experience_in_years\
+            FROM doctor d\
+            JOIN employment e ON d.doctor_id = e.doctor_id\
+            WHERE d.specialization = prof AND d.work_experience_in_years >= min_experience\
+        ) AS subquery;\
+    ELSEIF institution_type = 'hospital' THEN\
+        SELECT DISTINCT d.name, d.specialization, d.work_experience_in_years\
+        FROM doctor d\
+        JOIN employment e ON d.doctor_id = e.doctor_id\
+        WHERE d.specialization = prof AND d.work_experience_in_years >= min_experience AND e.hospital_id = institution_id\
+        \
+        UNION\
+        \
+        SELECT 'TOTAL DOCTORS' AS name, COUNT(*) AS work_experience_in_years, NULL AS specialization\
+        FROM (\
+            SELECT DISTINCT d.name, d.specialization, d.work_experience_in_years\
+            FROM doctor d\
+            JOIN employment e ON d.doctor_id = e.doctor_id\
+            WHERE d.specialization = prof AND d.work_experience_in_years >= min_experience AND e.hospital_id = institution_id\
+        ) AS subquery;\
+    ELSEIF institution_type = 'clinic' THEN\
+        SELECT DISTINCT d.name, d.specialization, d.work_experience_in_years\
+        FROM doctor d\
+        JOIN employment e ON d.doctor_id = e.doctor_id\
+        WHERE d.specialization = prof AND d.work_experience_in_years >= min_experience AND e.clinic_id = institution_id\
+        \
+        UNION\
+        \
+        SELECT 'TOTAL DOCTORS' AS name, COUNT(*) AS work_experience_in_years, NULL AS specialization\
+        FROM (\
+            SELECT DISTINCT d.name, d.specialization, d.work_experience_in_years\
+            FROM doctor d\
+            JOIN employment e ON d.doctor_id = e.doctor_id\
+            WHERE d.specialization = prof AND d.work_experience_in_years >= min_experience AND e.clinic_id = institution_id\
+        ) AS subquery;\
+    END IF;\
+END$$\
+DELIMITER ;\
+\
+-- \uc0\u1058 \u1077 \u1089 \u1090 \u1091 \u1074 \u1072 \u1085 \u1085 \u1103  \u1087 \u1088 \u1086 \u1094 \u1077 \u1076 \u1091 \u1088 \u1080 \
+CALL get_doctors_by_experience('Surgeon', 10, 1, 'hospital');\
+CALL get_doctors_by_experience('Surgeon', 10, 1, 'clinic');\
+CALL get_doctors_by_experience('Surgeon', 10, NULL, NULL);\
+\
+\
+DROP PROCEDURE IF EXISTS get_doctors_by_degree;\
+DELIMITER $$\
+CREATE PROCEDURE IF NOT EXISTS get_doctors_by_degree(IN prof VARCHAR(255), IN degree VARCHAR(255), IN institution_id INT, IN institution_type VARCHAR(255))\
+BEGIN\
+    IF institution_id IS NULL THEN\
+        SELECT DISTINCT d.name, d.specialization, d.degree\
+        FROM doctor d\
+        JOIN employment e ON d.doctor_id = e.doctor_id\
+        WHERE d.specialization = prof AND d.degree = degree\
+        \
+        UNION\
+        \
+        SELECT 'TOTAL DOCTORS' AS name, COUNT(*) AS degree, NULL AS specialization\
+        FROM (\
+            SELECT DISTINCT d.name, d.specialization, d.degree\
+            FROM doctor d\
+            JOIN employment e ON d.doctor_id = e.doctor_id\
+            WHERE d.specialization = prof AND d.degree = degree\
+        ) AS subquery;\
+    ELSEIF institution_type = 'hospital' THEN\
+        SELECT DISTINCT d.name, d.specialization, d.degree\
+        FROM doctor d\
+        JOIN employment e ON d.doctor_id = e.doctor_id\
+        WHERE d.specialization = prof AND d.degree = degree AND e.hospital_id = institution_id\
+        \
+        UNION\
+        \
+        SELECT 'TOTAL DOCTORS' AS name, COUNT(*) AS degree, NULL AS specialization\
+        FROM (\
+            SELECT DISTINCT d.name, d.specialization, d.degree\
+            FROM doctor d\
+            JOIN employment e ON d.doctor_id = e.doctor_id\
+            WHERE d.specialization = prof AND d.degree = degree AND e.hospital_id = institution_id\
+        ) AS subquery;\
+    ELSEIF institution_type = 'clinic' THEN\
+        SELECT DISTINCT d.name, d.specialization, d.degree\
+        FROM doctor d\
+        JOIN employment e ON d.doctor_id = e.doctor_id\
+        WHERE d.specialization = prof AND d.degree = degree AND e.clinic_id = institution_id\
+        \
+        UNION\
+        \
+        SELECT 'TOTAL DOCTORS' AS name, COUNT(*) AS degree, NULL AS specialization\
+        FROM (\
+            SELECT DISTINCT d.name, d.specialization, d.degree\
+            FROM doctor d\
+            JOIN employment e ON d.doctor_id = e.doctor_id\
+            WHERE d.specialization = prof AND d.degree = degree AND e.clinic_id = institution_id\
+        ) AS subquery;\
+    END IF;\
+END$$\
+DELIMITER ;\
+\
+-- \uc0\u1058 \u1077 \u1089 \u1090 \u1091 \u1074 \u1072 \u1085 \u1085 \u1103  \u1087 \u1088 \u1086 \u1094 \u1077 \u1076 \u1091 \u1088 \u1080 \
+CALL get_doctors_by_degree('Surgeon', 'PhD', 1, 'hospital');\
+CALL get_doctors_by_degree('Surgeon', 'MD', 1, 'clinic');\
+CALL get_doctors_by_degree('Surgeon', 'PhD', NULL, NULL);\
+\
+\
+DROP PROCEDURE IF EXISTS get_patients_by_location;\
+DELIMITER $$\
+CREATE PROCEDURE IF NOT EXISTS get_patients_by_location(IN hospital_id INT, IN department_id INT, IN ward_id INT)\
+BEGIN\
+    SELECT p.name AS patient_name, pr.date_of_entry, pr.disease AS patient_condition, pr.temperature_when_entered, d.name AS doctor_name\
+    FROM patient p\
+    JOIN patient_records pr ON p.patient_id = pr.patient_id\
+    JOIN doctor d ON pr.doctor_id = d.doctor_id\
+    WHERE (pr.hospital_id = hospital_id OR hospital_id IS NULL)\
+      AND (pr.department_id = department_id OR department_id IS NULL)\
+      AND (pr.ward_id = ward_id OR ward_id IS NULL);\
+END$$\
+DELIMITER ;\
+\
+-- \uc0\u1058 \u1077 \u1089 \u1090 \u1091 \u1074 \u1072 \u1085 \u1085 \u1103  \u1087 \u1088 \u1086 \u1094 \u1077 \u1076 \u1091 \u1088 \u1080 \
+CALL get_patients_by_location(1, NULL, NULL); -- \uc0\u1054 \u1090 \u1088 \u1080 \u1084 \u1072 \u1090 \u1080  \u1074 \u1089 \u1110 \u1093  \u1087 \u1072 \u1094 \u1110 \u1108 \u1085 \u1090 \u1110 \u1074  \u1083 \u1110 \u1082 \u1072 \u1088 \u1085 \u1110  \u1079  ID 1\
+CALL get_patients_by_location(1, 3, NULL);    -- \uc0\u1054 \u1090 \u1088 \u1080 \u1084 \u1072 \u1090 \u1080  \u1074 \u1089 \u1110 \u1093  \u1087 \u1072 \u1094 \u1110 \u1108 \u1085 \u1090 \u1110 \u1074  \u1074 \u1110 \u1076 \u1076 \u1110 \u1083 \u1077 \u1085 \u1085 \u1103  \u1079  ID 2 \u1091  \u1083 \u1110 \u1082 \u1072 \u1088 \u1085 \u1110  \u1079  ID 1\
+CALL get_patients_by_location(2, 4, 7);       -- \uc0\u1054 \u1090 \u1088 \u1080 \u1084 \u1072 \u1090 \u1080  \u1074 \u1089 \u1110 \u1093  \u1087 \u1072 \u1094 \u1110 \u1108 \u1085 \u1090 \u1110 \u1074  \u1087 \u1072 \u1083 \u1072 \u1090 \u1080  \u1079  ID 3 \u1091  \u1074 \u1110 \u1076 \u1076 \u1110 \u1083 \u1077 \u1085 \u1085 \u1110  \u1079  ID 2 \u1091  \u1083 \u1110 \u1082 \u1072 \u1088 \u1085 \u1110  \u1079  ID 1\
+\
+\
+DROP PROCEDURE IF EXISTS get_inpatients_by_hospital_or_doctor;\
+DELIMITER $$\
+CREATE PROCEDURE IF NOT EXISTS get_inpatients_by_hospital_or_doctor(IN hospital_id INT, IN doctor_id INT, IN start_date DATE, IN end_date DATE)\
+BEGIN\
+    SELECT p.name AS patient_name, pr.date_of_entry, pr.treatment_start_at, pr.treatment_end_at, d.name AS doctor_name\
+    FROM patient p\
+    JOIN patient_records pr ON p.patient_id = pr.patient_id\
+    JOIN doctor d ON pr.doctor_id = d.doctor_id\
+    WHERE (pr.hospital_id = hospital_id OR hospital_id IS NULL)\
+      AND (pr.doctor_id = doctor_id OR doctor_id IS NULL)\
+      AND pr.treatment_start_at >= start_date\
+      AND pr.treatment_end_at <= end_date;\
+END$$\
+DELIMITER ;\
+\
+-- \uc0\u1058 \u1077 \u1089 \u1090 \u1091 \u1074 \u1072 \u1085 \u1085 \u1103  \u1087 \u1088 \u1086 \u1094 \u1077 \u1076 \u1091 \u1088 \u1080 \
+CALL get_inpatients_by_hospital_or_doctor(1, NULL, '2024-01-01', '2024-12-31'); -- \uc0\u1054 \u1090 \u1088 \u1080 \u1084 \u1072 \u1090 \u1080  \u1074 \u1089 \u1110 \u1093  \u1087 \u1072 \u1094 \u1110 \u1108 \u1085 \u1090 \u1110 \u1074 , \u1103 \u1082 \u1110  \u1087 \u1088 \u1086 \u1081 \u1096 \u1083 \u1080  \u1089 \u1090 \u1072 \u1094 \u1110 \u1086 \u1085 \u1072 \u1088 \u1085 \u1077  \u1083 \u1110 \u1082 \u1091 \u1074 \u1072 \u1085 \u1085 \u1103  \u1091  \u1083 \u1110 \u1082 \u1072 \u1088 \u1085 \u1110  \u1079  ID 1 \u1079 \u1072  2024 \u1088 \u1110 \u1082 \
+CALL get_inpatients_by_hospital_or_doctor(NULL, 1, '2024-01-01', '2024-12-31'); -- \uc0\u1054 \u1090 \u1088 \u1080 \u1084 \u1072 \u1090 \u1080  \u1074 \u1089 \u1110 \u1093  \u1087 \u1072 \u1094 \u1110 \u1108 \u1085 \u1090 \u1110 \u1074 , \u1103 \u1082 \u1110  \u1087 \u1088 \u1086 \u1081 \u1096 \u1083 \u1080  \u1089 \u1090 \u1072 \u1094 \u1110 \u1086 \u1085 \u1072 \u1088 \u1085 \u1077  \u1083 \u1110 \u1082 \u1091 \u1074 \u1072 \u1085 \u1085 \u1103  \u1091  \u1083 \u1110 \u1082 \u1072 \u1088 \u1103  \u1079  ID 1 \u1079 \u1072  2024 \u1088 \u1110 \u1082 \
+CALL get_inpatients_by_hospital_or_doctor(1, 1, '2024-01-01', '2024-12-31');    -- \uc0\u1054 \u1090 \u1088 \u1080 \u1084 \u1072 \u1090 \u1080  \u1074 \u1089 \u1110 \u1093  \u1087 \u1072 \u1094 \u1110 \u1108 \u1085 \u1090 \u1110 \u1074 , \u1103 \u1082 \u1110  \u1087 \u1088 \u1086 \u1081 \u1096 \u1083 \u1080  \u1089 \u1090 \u1072 \u1094 \u1110 \u1086 \u1085 \u1072 \u1088 \u1085 \u1077  \u1083 \u1110 \u1082 \u1091 \u1074 \u1072 \u1085 \u1085 \u1103  \u1091  \u1083 \u1110 \u1082 \u1072 \u1088 \u1085 \u1110  \u1079  ID 1 \u1091  \u1083 \u1110 \u1082 \u1072 \u1088 \u1103  \u1079  ID 1 \u1079 \u1072  2024 \u1088 \u1110 \u1082 \
+\
+\
+\
+DROP PROCEDURE IF EXISTS get_patients_by_doctor_specialization_and_clinic;\
+DELIMITER $$\
+CREATE PROCEDURE IF NOT EXISTS get_patients_by_doctor_specialization_and_clinic(IN specialization VARCHAR(255), IN clinic_id INT)\
+BEGIN\
+    SELECT p.name AS patient_name, d.name AS doctor_name, d.specialization, pr.date_of_entry, pr.treatment_type\
+    FROM patient p\
+    JOIN patient_records pr ON p.patient_id = pr.patient_id\
+    JOIN doctor d ON pr.doctor_id = d.doctor_id\
+    WHERE d.specialization = specialization\
+      AND pr.clinic_id = clinic_id;\
+END$$\
+DELIMITER ;\
+\
+-- \uc0\u1058 \u1077 \u1089 \u1090 \u1091 \u1074 \u1072 \u1085 \u1085 \u1103  \u1087 \u1088 \u1086 \u1094 \u1077 \u1076 \u1091 \u1088 \u1080 \
+CALL get_patients_by_doctor_specialization_and_clinic('Surgeon', 2); -- \uc0\u1054 \u1090 \u1088 \u1080 \u1084 \u1072 \u1090 \u1080  \u1074 \u1089 \u1110 \u1093  \u1087 \u1072 \u1094 \u1110 \u1108 \u1085 \u1090 \u1110 \u1074 , \u1097 \u1086  \u1089 \u1087 \u1086 \u1089 \u1090 \u1077 \u1088 \u1110 \u1075 \u1072 \u1102 \u1090 \u1100 \u1089 \u1103  \u1091  \u1093 \u1110 \u1088 \u1091 \u1088 \u1075 \u1072  \u1091  \u1087 \u1086 \u1083 \u1110 \u1082 \u1083 \u1110 \u1085 \u1110 \u1094 \u1110  \u1079  ID 2\
+CALL get_patients_by_doctor_specialization_and_clinic('
+\f1\fs22 \cf2 \CocoaLigature0 Neurologist
+\f0\fs24 \cf0 \CocoaLigature1 ', 2); -- \uc0\u1054 \u1090 \u1088 \u1080 \u1084 \u1072 \u1090 \u1080  \u1074 \u1089 \u1110 \u1093  \u1087 \u1072 \u1094 \u1110 \u1108 \u1085 \u1090 \u1110 \u1074 , \u1097 \u1086  \u1089 \u1087 \u1086 \u1089 \u1090 \u1077 \u1088 \u1110 \u1075 \u1072 \u1102 \u1090 \u1100 \u1089 \u1103  \u1091  \u1085 \u1077 \u1074 \u1088 \u1086 \u1083 \u1086 \u1075  \u1091  \u1087 \u1086 \u1083 \u1110 \u1082 \u1083 \u1110 \u1085 \u1110 \u1094 \u1110  \u1079  ID 1\
+\
+\
+DROP PROCEDURE IF EXISTS get_wards_and_beds_info;\
+DELIMITER $$\
+CREATE PROCEDURE IF NOT EXISTS get_wards_and_beds_info(IN hospital_id INT)\
+BEGIN\
+    -- \uc0\u1047 \u1072 \u1075 \u1072 \u1083 \u1100 \u1085 \u1072  \u1082 \u1110 \u1083 \u1100 \u1082 \u1110 \u1089 \u1090 \u1100  \u1087 \u1072 \u1083 \u1072 \u1090  \u1110  \u1083 \u1110 \u1078 \u1086 \u1082  \u1091  \u1083 \u1110 \u1082 \u1072 \u1088 \u1085 \u1110 \
+    SELECT COUNT(w.ward_id) AS total_wards, SUM(w.capacity) AS total_beds\
+    FROM ward w\
+    JOIN department d ON w.department_id = d.department_id\
+    JOIN building b ON d.building_id = b.building_id\
+    WHERE b.hospital_id = hospital_id;\
+\
+    -- \uc0\u1050 \u1110 \u1083 \u1100 \u1082 \u1110 \u1089 \u1090 \u1100  \u1087 \u1072 \u1083 \u1072 \u1090  \u1110  \u1083 \u1110 \u1078 \u1086 \u1082  \u1087 \u1086  \u1082 \u1086 \u1078 \u1085 \u1086 \u1084 \u1091  \u1074 \u1110 \u1076 \u1076 \u1110 \u1083 \u1077 \u1085 \u1085 \u1102 \
+    SELECT d.name AS department_name, COUNT(w.ward_id) AS total_wards, SUM(w.capacity) AS total_beds\
+    FROM ward w\
+    JOIN department d ON w.department_id = d.department_id\
+    JOIN building b ON d.building_id = b.building_id\
+    WHERE b.hospital_id = hospital_id\
+    GROUP BY d.name;\
+\
+    -- \uc0\u1050 \u1110 \u1083 \u1100 \u1082 \u1110 \u1089 \u1090 \u1100  \u1074 \u1110 \u1083 \u1100 \u1085 \u1080 \u1093  \u1083 \u1110 \u1078 \u1086 \u1082  \u1091  \u1082 \u1086 \u1078 \u1085 \u1086 \u1084 \u1091  \u1074 \u1110 \u1076 \u1076 \u1110 \u1083 \u1077 \u1085 \u1085 \u1110 \
+    SELECT d.name AS department_name, SUM(w.capacity - w.filled_status) AS free_beds\
+    FROM ward w\
+    JOIN department d ON w.department_id = d.department_id\
+    JOIN building b ON d.building_id = b.building_id\
+    WHERE b.hospital_id = hospital_id\
+    GROUP BY d.name;\
+\
+    -- \uc0\u1050 \u1110 \u1083 \u1100 \u1082 \u1110 \u1089 \u1090 \u1100  \u1087 \u1086 \u1074 \u1085 \u1110 \u1089 \u1090 \u1102  \u1074 \u1110 \u1083 \u1100 \u1085 \u1080 \u1093  \u1087 \u1072 \u1083 \u1072 \u1090  \u1091  \u1082 \u1086 \u1078 \u1085 \u1086 \u1084 \u1091  \u1074 \u1110 \u1076 \u1076 \u1110 \u1083 \u1077 \u1085 \u1085 \u1110 \
+    SELECT d.name AS department_name, COUNT(w.ward_id) AS free_wards\
+    FROM ward w\
+    JOIN department d ON w.department_id = d.department_id\
+    JOIN building b ON d.building_id = b.building_id\
+    WHERE b.hospital_id = hospital_id AND w.filled_status = 0\
+    GROUP BY d.name;\
+END$$\
+DELIMITER ;\
+\
+-- \uc0\u1058 \u1077 \u1089 \u1090 \u1091 \u1074 \u1072 \u1085 \u1085 \u1103  \u1087 \u1088 \u1086 \u1094 \u1077 \u1076 \u1091 \u1088 \u1080 \
+CALL get_wards_and_beds_info(1); -- \uc0\u1054 \u1090 \u1088 \u1080 \u1084 \u1072 \u1090 \u1080  \u1110 \u1085 \u1092 \u1086 \u1088 \u1084 \u1072 \u1094 \u1110 \u1102  \u1087 \u1088 \u1086  \u1087 \u1072 \u1083 \u1072 \u1090 \u1080  \u1090 \u1072  \u1083 \u1110 \u1078 \u1082 \u1072  \u1091  \u1083 \u1110 \u1082 \u1072 \u1088 \u1085 \u1110  \u1079  ID 1\
+CALL get_wards_and_beds_info(2); -- \uc0\u1054 \u1090 \u1088 \u1080 \u1084 \u1072 \u1090 \u1080  \u1110 \u1085 \u1092 \u1086 \u1088 \u1084 \u1072 \u1094 \u1110 \u1102  \u1087 \u1088 \u1086  \u1087 \u1072 \u1083 \u1072 \u1090 \u1080  \u1090 \u1072  \u1083 \u1110 \u1078 \u1082 \u1072  \u1091  \u1083 \u1110 \u1082 \u1072 \u1088 \u1085 \u1110  \u1079  ID 2\
+\
+DROP PROCEDURE IF EXISTS get_clinic_cabinets_info;\
+DELIMITER $$\
+CREATE PROCEDURE IF NOT EXISTS get_clinic_cabinets_info(IN clinic_id INT, IN start_date DATE, IN end_date DATE)\
+BEGIN\
+    -- \uc0\u1047 \u1072 \u1075 \u1072 \u1083 \u1100 \u1085 \u1072  \u1082 \u1110 \u1083 \u1100 \u1082 \u1110 \u1089 \u1090 \u1100  \u1082 \u1072 \u1073 \u1110 \u1085 \u1077 \u1090 \u1110 \u1074  \u1091  \u1087 \u1086 \u1083 \u1110 \u1082 \u1083 \u1110 \u1085 \u1110 \u1094 \u1110 \
+    SELECT COUNT(c.cabinet_id) AS total_cabinets\
+    FROM cabinets c\
+    WHERE c.clinic_id = clinic_id;\
+\
+    -- \uc0\u1063 \u1080 \u1089 \u1083 \u1086  \u1074 \u1110 \u1076 \u1074 \u1110 \u1076 \u1091 \u1074 \u1072 \u1085 \u1100  \u1082 \u1086 \u1078 \u1085 \u1086 \u1075 \u1086  \u1082 \u1072 \u1073 \u1110 \u1085 \u1077 \u1090 \u1091  \u1079 \u1072  \u1087 \u1077 \u1074 \u1085 \u1080 \u1081  \u1087 \u1077 \u1088 \u1110 \u1086 \u1076 \
+    SELECT c.cabinet_id, COUNT(pr.record_id) AS visit_count\
+    FROM cabinets c\
+    LEFT JOIN patient_records pr ON c.cabinet_id = pr.cabinet_id\
+    WHERE c.clinic_id = clinic_id\
+      AND pr.date_of_entry BETWEEN start_date AND end_date\
+    GROUP BY c.cabinet_id;\
+END$$\
+DELIMITER ;\
+\
+-- \uc0\u1058 \u1077 \u1089 \u1090 \u1091 \u1074 \u1072 \u1085 \u1085 \u1103  \u1087 \u1088 \u1086 \u1094 \u1077 \u1076 \u1091 \u1088 \u1080 \
+CALL get_clinic_cabinets_info(1, '2024-01-01', '2024-12-31'); -- \uc0\u1054 \u1090 \u1088 \u1080 \u1084 \u1072 \u1090 \u1080  \u1110 \u1085 \u1092 \u1086 \u1088 \u1084 \u1072 \u1094 \u1110 \u1102  \u1087 \u1088 \u1086  \u1082 \u1072 \u1073 \u1110 \u1085 \u1077 \u1090 \u1080  \u1090 \u1072  \u1074 \u1110 \u1076 \u1074 \u1110 \u1076 \u1091 \u1074 \u1072 \u1085 \u1085 \u1103  \u1091  \u1087 \u1086 \u1083 \u1110 \u1082 \u1083 \u1110 \u1085 \u1110 \u1094 \u1110  \u1079  ID 1 \u1079 \u1072  2024 \u1088 \u1110 \u1082 \
+CALL get_clinic_cabinets_info(2, '2024-01-01', '2024-12-31'); -- \uc0\u1054 \u1090 \u1088 \u1080 \u1084 \u1072 \u1090 \u1080  \u1110 \u1085 \u1092 \u1086 \u1088 \u1084 \u1072 \u1094 \u1110 \u1102  \u1087 \u1088 \u1086  \u1082 \u1072 \u1073 \u1110 \u1085 \u1077 \u1090 \u1080  \u1090 \u1072  \u1074 \u1110 \u1076 \u1074 \u1110 \u1076 \u1091 \u1074 \u1072 \u1085 \u1085 \u1103  \u1091  \u1087 \u1086 \u1083 \u1110 \u1082 \u1083 \u1110 \u1085 \u1110 \u1094 \u1110  \u1079  ID 2 \u1079 \u1072  2024 \u1088 \u1110 \u1082 \
+\
+\
+DROP PROCEDURE IF EXISTS get_doctor_performance;\
+DELIMITER $$\
+CREATE PROCEDURE IF NOT EXISTS get_doctor_performance(IN doctor_id INT, IN clinic_id INT, IN specialization VARCHAR(255), IN start_date DATE, IN end_date DATE)\
+BEGIN\
+    IF doctor_id IS NOT NULL THEN\
+        -- \uc0\u1055 \u1088 \u1086 \u1076 \u1091 \u1082 \u1090 \u1080 \u1074 \u1085 \u1110 \u1089 \u1090 \u1100  \u1076 \u1083 \u1103  \u1082 \u1086 \u1085 \u1082 \u1088 \u1077 \u1090 \u1085 \u1086 \u1075 \u1086  \u1083 \u1110 \u1082 \u1072 \u1088 \u1103 \
+        SELECT d.name AS doctor_name, COUNT(pr.patient_id) / DATEDIFF(end_date, start_date) AS average_patients_per_day\
+        FROM doctor d\
+        JOIN patient_records pr ON d.doctor_id = pr.doctor_id\
+        WHERE d.doctor_id = doctor_id\
+          AND pr.date_of_entry BETWEEN start_date AND end_date\
+        GROUP BY d.name;\
+    ELSEIF clinic_id IS NOT NULL THEN\
+        -- \uc0\u1055 \u1088 \u1086 \u1076 \u1091 \u1082 \u1090 \u1080 \u1074 \u1085 \u1110 \u1089 \u1090 \u1100  \u1076 \u1083 \u1103  \u1074 \u1089 \u1110 \u1093  \u1083 \u1110 \u1082 \u1072 \u1088 \u1110 \u1074  \u1091  \u1087 \u1086 \u1083 \u1110 \u1082 \u1083 \u1110 \u1085 \u1110 \u1094 \u1110 \
+        SELECT d.name AS doctor_name, COUNT(pr.patient_id) / DATEDIFF(end_date, start_date) AS average_patients_per_day\
+        FROM doctor d\
+        JOIN patient_records pr ON d.doctor_id = pr.doctor_id\
+        WHERE pr.clinic_id = clinic_id\
+          AND pr.date_of_entry BETWEEN start_date AND end_date\
+        GROUP BY d.name;\
+    ELSEIF specialization IS NOT NULL THEN\
+        -- \uc0\u1055 \u1088 \u1086 \u1076 \u1091 \u1082 \u1090 \u1080 \u1074 \u1085 \u1110 \u1089 \u1090 \u1100  \u1076 \u1083 \u1103  \u1074 \u1089 \u1110 \u1093  \u1083 \u1110 \u1082 \u1072 \u1088 \u1110 \u1074  \u1079 \u1072 \u1076 \u1072 \u1085 \u1086 \u1075 \u1086  \u1087 \u1088 \u1086 \u1092 \u1110 \u1083 \u1102 \
+        SELECT d.name AS doctor_name, COUNT(pr.patient_id) / DATEDIFF(end_date, start_date) AS average_patients_per_day\
+        FROM doctor d\
+        JOIN patient_records pr ON d.doctor_id = pr.doctor_id\
+        WHERE d.specialization = specialization\
+          AND pr.date_of_entry BETWEEN start_date AND end_date\
+        GROUP BY d.name;\
+    ELSE\
+        -- \uc0\u1071 \u1082 \u1097 \u1086  \u1078 \u1086 \u1076 \u1077 \u1085  \u1087 \u1072 \u1088 \u1072 \u1084 \u1077 \u1090 \u1088  \u1085 \u1077  \u1079 \u1072 \u1076 \u1072 \u1085 \u1080 \u1081 , \u1087 \u1086 \u1074 \u1077 \u1088 \u1090 \u1072 \u1108 \u1084 \u1086  \u1087 \u1086 \u1074 \u1110 \u1076 \u1086 \u1084 \u1083 \u1077 \u1085 \u1085 \u1103 \
+        SELECT 'Please provide either doctor_id, clinic_id, or specialization' AS message;\
+    END IF;\
+END$$\
+DELIMITER ;\
+\
+-- \uc0\u1058 \u1077 \u1089 \u1090 \u1091 \u1074 \u1072 \u1085 \u1085 \u1103  \u1087 \u1088 \u1086 \u1094 \u1077 \u1076 \u1091 \u1088 \u1080  \u1079  \u1087 \u1077 \u1088 \u1110 \u1086 \u1076 \u1086 \u1084  2024-03-01 \u1076 \u1086  2024-03-30\
+CALL get_doctor_performance(1, NULL, NULL, '2024-03-01', '2024-03-30'); -- \uc0\u1055 \u1088 \u1086 \u1076 \u1091 \u1082 \u1090 \u1080 \u1074 \u1085 \u1110 \u1089 \u1090 \u1100  \u1076 \u1083 \u1103  \u1083 \u1110 \u1082 \u1072 \u1088 \u1103  \u1079  ID 1 \u1079 \u1072  \u1073 \u1077 \u1088 \u1077 \u1079 \u1077 \u1085 \u1100  2024 \u1088 \u1086 \u1082 \u1091 \
+CALL get_doctor_performance(NULL, 1, NULL, '2024-03-01', '2024-03-30'); -- \uc0\u1055 \u1088 \u1086 \u1076 \u1091 \u1082 \u1090 \u1080 \u1074 \u1085 \u1110 \u1089 \u1090 \u1100  \u1076 \u1083 \u1103  \u1074 \u1089 \u1110 \u1093  \u1083 \u1110 \u1082 \u1072 \u1088 \u1110 \u1074  \u1091  \u1087 \u1086 \u1083 \u1110 \u1082 \u1083 \u1110 \u1085 \u1110 \u1094 \u1110  \u1079  ID 1 \u1079 \u1072  \u1073 \u1077 \u1088 \u1077 \u1079 \u1077 \u1085 \u1100  2024 \u1088 \u1086 \u1082 \u1091 \
+CALL get_doctor_performance(NULL, NULL, 'Surgeon', '2024-03-01', '2024-03-30'); -- \uc0\u1055 \u1088 \u1086 \u1076 \u1091 \u1082 \u1090 \u1080 \u1074 \u1085 \u1110 \u1089 \u1090 \u1100  \u1076 \u1083 \u1103  \u1074 \u1089 \u1110 \u1093  \u1093 \u1110 \u1088 \u1091 \u1088 \u1075 \u1110 \u1074  \u1079 \u1072  \u1073 \u1077 \u1088 \u1077 \u1079 \u1077 \u1085 \u1100  2024 \u1088 \u1086 \u1082 \u1091 \
+\
+\
+\
+\
+DROP PROCEDURE IF EXISTS get_doctor_workload_by_date;\
+DELIMITER $$\
+CREATE PROCEDURE IF NOT EXISTS get_doctor_workload_by_date(IN target_date DATE, IN doctor_id INT, IN hospital_id INT, IN specialization VARCHAR(255))\
+BEGIN\
+    IF doctor_id IS NOT NULL THEN\
+        -- \uc0\u1047 \u1072 \u1074 \u1072 \u1085 \u1090 \u1072 \u1078 \u1077 \u1085 \u1085 \u1103  \u1076 \u1083 \u1103  \u1082 \u1086 \u1085 \u1082 \u1088 \u1077 \u1090 \u1085 \u1086 \u1075 \u1086  \u1083 \u1110 \u1082 \u1072 \u1088 \u1103  \u1085 \u1072  \u1079 \u1072 \u1076 \u1072 \u1085 \u1091  \u1076 \u1072 \u1090 \u1091 \
+        SELECT d.name AS doctor_name, COUNT(pr.patient_id) AS patient_count\
+        FROM doctor d\
+        JOIN patient_records pr ON d.doctor_id = pr.doctor_id\
+        WHERE d.doctor_id = doctor_id\
+          AND pr.treatment_end_at > target_date\
+        GROUP BY d.name;\
+    ELSEIF hospital_id IS NOT NULL THEN\
+        -- \uc0\u1047 \u1072 \u1074 \u1072 \u1085 \u1090 \u1072 \u1078 \u1077 \u1085 \u1085 \u1103  \u1076 \u1083 \u1103  \u1074 \u1089 \u1110 \u1093  \u1083 \u1110 \u1082 \u1072 \u1088 \u1110 \u1074  \u1091  \u1083 \u1110 \u1082 \u1072 \u1088 \u1085 \u1110  \u1085 \u1072  \u1079 \u1072 \u1076 \u1072 \u1085 \u1091  \u1076 \u1072 \u1090 \u1091 \
+        SELECT d.name AS doctor_name, COUNT(pr.patient_id) AS patient_count\
+        FROM doctor d\
+        JOIN patient_records pr ON d.doctor_id = pr.doctor_id\
+        WHERE pr.hospital_id = hospital_id\
+          AND pr.treatment_end_at > target_date\
+        GROUP BY d.name;\
+    ELSEIF specialization IS NOT NULL THEN\
+        -- \uc0\u1047 \u1072 \u1074 \u1072 \u1085 \u1090 \u1072 \u1078 \u1077 \u1085 \u1085 \u1103  \u1076 \u1083 \u1103  \u1074 \u1089 \u1110 \u1093  \u1083 \u1110 \u1082 \u1072 \u1088 \u1110 \u1074  \u1079 \u1072 \u1076 \u1072 \u1085 \u1086 \u1075 \u1086  \u1087 \u1088 \u1086 \u1092 \u1110 \u1083 \u1102  \u1085 \u1072  \u1079 \u1072 \u1076 \u1072 \u1085 \u1091  \u1076 \u1072 \u1090 \u1091 \
+        SELECT d.name AS doctor_name, COUNT(pr.patient_id) AS patient_count\
+        FROM doctor d\
+        JOIN patient_records pr ON d.doctor_id = pr.doctor_id\
+        WHERE d.specialization = specialization\
+          AND pr.treatment_end_at > target_date\
+        GROUP BY d.name;\
+    ELSE\
+        -- \uc0\u1071 \u1082 \u1097 \u1086  \u1078 \u1086 \u1076 \u1077 \u1085  \u1087 \u1072 \u1088 \u1072 \u1084 \u1077 \u1090 \u1088  \u1085 \u1077  \u1079 \u1072 \u1076 \u1072 \u1085 \u1080 \u1081 , \u1087 \u1086 \u1074 \u1077 \u1088 \u1090 \u1072 \u1108 \u1084 \u1086  \u1087 \u1086 \u1074 \u1110 \u1076 \u1086 \u1084 \u1083 \u1077 \u1085 \u1085 \u1103 \
+        SELECT 'Please provide either doctor_id, hospital_id, or specialization' AS message;\
+    END IF;\
+END$$\
+DELIMITER ;\
+\
+-- \uc0\u1058 \u1077 \u1089 \u1090 \u1091 \u1074 \u1072 \u1085 \u1085 \u1103  \u1087 \u1088 \u1086 \u1094 \u1077 \u1076 \u1091 \u1088 \u1080 \
+CALL get_doctor_workload_by_date('2024-03-15', 1, NULL, NULL); -- \uc0\u1047 \u1072 \u1074 \u1072 \u1085 \u1090 \u1072 \u1078 \u1077 \u1085 \u1085 \u1103  \u1076 \u1083 \u1103  \u1083 \u1110 \u1082 \u1072 \u1088 \u1103  \u1079  ID 1 \u1085 \u1072  15 \u1073 \u1077 \u1088 \u1077 \u1079 \u1085 \u1103  2024 \u1088 \u1086 \u1082 \u1091 \
+CALL get_doctor_workload_by_date('2024-03-15', NULL, 1, NULL); -- \uc0\u1047 \u1072 \u1074 \u1072 \u1085 \u1090 \u1072 \u1078 \u1077 \u1085 \u1085 \u1103  \u1076 \u1083 \u1103  \u1074 \u1089 \u1110 \u1093  \u1083 \u1110 \u1082 \u1072 \u1088 \u1110 \u1074  \u1091  \u1083 \u1110 \u1082 \u1072 \u1088 \u1085 \u1110  \u1079  ID 1 \u1085 \u1072  15 \u1073 \u1077 \u1088 \u1077 \u1079 \u1085 \u1103  2024 \u1088 \u1086 \u1082 \u1091 \
+CALL get_doctor_workload_by_date('2024-03-15', NULL, NULL, 'Surgeon'); -- \uc0\u1047 \u1072 \u1074 \u1072 \u1085 \u1090 \u1072 \u1078 \u1077 \u1085 \u1085 \u1103  \u1076 \u1083 \u1103  \u1074 \u1089 \u1110 \u1093  \u1093 \u1110 \u1088 \u1091 \u1088 \u1075 \u1110 \u1074  \u1085 \u1072  15 \u1073 \u1077 \u1088 \u1077 \u1079 \u1085 \u1103  2024 \u1088 \u1086 \u1082 \u1091 \
+\
+\
+\
+DROP PROCEDURE IF EXISTS get_patients_who_had_surgery;\
+DELIMITER $$\
+CREATE PROCEDURE IF NOT EXISTS get_patients_who_had_surgery(IN institution_id INT, IN institution_type VARCHAR(255), IN doctor_id INT, IN start_date DATE, IN end_date DATE)\
+BEGIN\
+    IF institution_type = 'hospital' THEN\
+        -- \uc0\u1055 \u1077 \u1088 \u1077 \u1083 \u1110 \u1082  \u1087 \u1072 \u1094 \u1110 \u1108 \u1085 \u1090 \u1110 \u1074 , \u1103 \u1082 \u1110  \u1087 \u1077 \u1088 \u1077 \u1085 \u1077 \u1089 \u1083 \u1080  \u1086 \u1087 \u1077 \u1088 \u1072 \u1094 \u1110 \u1111  \u1091  \u1079 \u1072 \u1079 \u1085 \u1072 \u1095 \u1077 \u1085 \u1110 \u1081  \u1083 \u1110 \u1082 \u1072 \u1088 \u1085 \u1110 \
+        SELECT p.name AS patient_name, pr.date_of_entry, pr.treatment_type, d.name AS doctor_name\
+        FROM patient p\
+        JOIN patient_records pr ON p.patient_id = pr.patient_id\
+        JOIN doctor d ON pr.doctor_id = d.doctor_id\
+        WHERE pr.hospital_id = institution_id\
+          AND pr.treatment_type = 'Surgery'\
+          AND pr.date_of_entry BETWEEN start_date AND end_date;\
+    ELSEIF institution_type = 'clinic' THEN\
+        -- \uc0\u1055 \u1077 \u1088 \u1077 \u1083 \u1110 \u1082  \u1087 \u1072 \u1094 \u1110 \u1108 \u1085 \u1090 \u1110 \u1074 , \u1103 \u1082 \u1110  \u1087 \u1077 \u1088 \u1077 \u1085 \u1077 \u1089 \u1083 \u1080  \u1086 \u1087 \u1077 \u1088 \u1072 \u1094 \u1110 \u1111  \u1091  \u1079 \u1072 \u1079 \u1085 \u1072 \u1095 \u1077 \u1085 \u1110 \u1081  \u1087 \u1086 \u1083 \u1110 \u1082 \u1083 \u1110 \u1085 \u1110 \u1094 \u1110 \
+        SELECT p.name AS patient_name, pr.date_of_entry, pr.treatment_type, d.name AS doctor_name\
+        FROM patient p\
+        JOIN patient_records pr ON p.patient_id = pr.patient_id\
+        JOIN doctor d ON pr.doctor_id = d.doctor_id\
+        WHERE pr.clinic_id = institution_id\
+          AND pr.treatment_type = 'Surgery'\
+          AND pr.date_of_entry BETWEEN start_date AND end_date;\
+    ELSEIF doctor_id IS NOT NULL THEN\
+        -- \uc0\u1055 \u1077 \u1088 \u1077 \u1083 \u1110 \u1082  \u1087 \u1072 \u1094 \u1110 \u1108 \u1085 \u1090 \u1110 \u1074 , \u1103 \u1082 \u1110  \u1087 \u1077 \u1088 \u1077 \u1085 \u1077 \u1089 \u1083 \u1080  \u1086 \u1087 \u1077 \u1088 \u1072 \u1094 \u1110 \u1111  \u1091  \u1082 \u1086 \u1085 \u1082 \u1088 \u1077 \u1090 \u1085 \u1086 \u1075 \u1086  \u1083 \u1110 \u1082 \u1072 \u1088 \u1103 \
+        SELECT p.name AS patient_name, pr.date_of_entry, pr.treatment_type, d.name AS doctor_name\
+        FROM patient p\
+        JOIN patient_records pr ON p.patient_id = pr.patient_id\
+        JOIN doctor d ON pr.doctor_id = d.doctor_id\
+        WHERE pr.doctor_id = doctor_id\
+          AND pr.treatment_type = 'Surgery'\
+          AND pr.date_of_entry BETWEEN start_date AND end_date;\
+    ELSE\
+        -- \uc0\u1071 \u1082 \u1097 \u1086  \u1078 \u1086 \u1076 \u1077 \u1085  \u1087 \u1072 \u1088 \u1072 \u1084 \u1077 \u1090 \u1088  \u1085 \u1077  \u1079 \u1072 \u1076 \u1072 \u1085 \u1080 \u1081 , \u1087 \u1086 \u1074 \u1077 \u1088 \u1090 \u1072 \u1108 \u1084 \u1086  \u1087 \u1086 \u1074 \u1110 \u1076 \u1086 \u1084 \u1083 \u1077 \u1085 \u1085 \u1103 \
+        SELECT 'Please provide either institution_id and institution_type, or doctor_id' AS message;\
+    END IF;\
+END$$\
+DELIMITER ;\
+\
+-- \uc0\u1058 \u1077 \u1089 \u1090 \u1091 \u1074 \u1072 \u1085 \u1085 \u1103  \u1087 \u1088 \u1086 \u1094 \u1077 \u1076 \u1091 \u1088 \u1080 \
+CALL get_patients_who_had_surgery(1, 'hospital', NULL, '2024-01-01', '2024-03-30'); -- \uc0\u1055 \u1077 \u1088 \u1077 \u1083 \u1110 \u1082  \u1087 \u1072 \u1094 \u1110 \u1108 \u1085 \u1090 \u1110 \u1074 , \u1103 \u1082 \u1110  \u1087 \u1077 \u1088 \u1077 \u1085 \u1077 \u1089 \u1083 \u1080  \u1086 \u1087 \u1077 \u1088 \u1072 \u1094 \u1110 \u1111  \u1091  \u1083 \u1110 \u1082 \u1072 \u1088 \u1085 \u1110  \u1079  ID 1 \u1079 \u1072  \u1087 \u1077 \u1088 \u1110 \u1086 \u1076  01.01.2024 - 30.03.2024\
+CALL get_patients_who_had_surgery(1, 'clinic', NULL, '2024-01-01', '2024-03-30'); -- \uc0\u1055 \u1077 \u1088 \u1077 \u1083 \u1110 \u1082  \u1087 \u1072 \u1094 \u1110 \u1108 \u1085 \u1090 \u1110 \u1074 , \u1103 \u1082 \u1110  \u1087 \u1077 \u1088 \u1077 \u1085 \u1077 \u1089 \u1083 \u1080  \u1086 \u1087 \u1077 \u1088 \u1072 \u1094 \u1110 \u1111  \u1091  \u1087 \u1086 \u1083 \u1110 \u1082 \u1083 \u1110 \u1085 \u1110 \u1094 \u1110  \u1079  ID 1 \u1079 \u1072  \u1087 \u1077 \u1088 \u1110 \u1086 \u1076  01.01.2024 - 30.03.2024\
+CALL get_patients_who_had_surgery(NULL, NULL, 1, '2024-01-01', '2024-03-30'); -- \uc0\u1055 \u1077 \u1088 \u1077 \u1083 \u1110 \u1082  \u1087 \u1072 \u1094 \u1110 \u1108 \u1085 \u1090 \u1110 \u1074 , \u1103 \u1082 \u1110  \u1087 \u1077 \u1088 \u1077 \u1085 \u1077 \u1089 \u1083 \u1080  \u1086 \u1087 \u1077 \u1088 \u1072 \u1094 \u1110 \u1111  \u1091  \u1083 \u1110 \u1082 \u1072 \u1088 \u1103  \u1079  ID 1 \u1079 \u1072  \u1087 \u1077 \u1088 \u1110 \u1086 \u1076  01.01.2024 - 30.03.2024\
+\
+\
+DROP PROCEDURE IF EXISTS get_laboratory_performance;\
+DELIMITER $$\
+CREATE PROCEDURE IF NOT EXISTS get_laboratory_performance(IN lab_id INT, IN hospital_id INT, IN clinic_id INT, IN start_date DATE, IN end_date DATE)\
+BEGIN\
+    IF lab_id IS NOT NULL THEN\
+        -- \uc0\u1055 \u1088 \u1086 \u1076 \u1091 \u1082 \u1090 \u1080 \u1074 \u1085 \u1110 \u1089 \u1090 \u1100  \u1076 \u1083 \u1103  \u1082 \u1086 \u1085 \u1082 \u1088 \u1077 \u1090 \u1085 \u1086 \u1111  \u1083 \u1072 \u1073 \u1086 \u1088 \u1072 \u1090 \u1086 \u1088 \u1110 \u1111 \
+        SELECT l.name AS laboratory_name, COUNT(lt.test_id) / DATEDIFF(end_date, start_date) AS average_tests_per_day\
+        FROM laboratory l\
+        JOIN laboratory_test lt ON l.lab_id = lt.lab_id\
+        WHERE l.lab_id = lab_id\
+          AND lt.test_date BETWEEN start_date AND end_date\
+        GROUP BY l.name;\
+    ELSEIF hospital_id IS NOT NULL THEN\
+        -- \uc0\u1055 \u1088 \u1086 \u1076 \u1091 \u1082 \u1090 \u1080 \u1074 \u1085 \u1110 \u1089 \u1090 \u1100  \u1076 \u1083 \u1103  \u1074 \u1089 \u1110 \u1093  \u1083 \u1072 \u1073 \u1086 \u1088 \u1072 \u1090 \u1086 \u1088 \u1110 \u1081  \u1091  \u1083 \u1110 \u1082 \u1072 \u1088 \u1085 \u1110 \
+        SELECT l.name AS laboratory_name, COUNT(lt.test_id) / DATEDIFF(end_date, start_date) AS average_tests_per_day\
+        FROM laboratory l\
+        JOIN laboratory_test lt ON l.lab_id = lt.lab_id\
+        WHERE lt.hospital_id = hospital_id\
+          AND lt.test_date BETWEEN start_date AND end_date\
+        GROUP BY l.name;\
+    ELSEIF clinic_id IS NOT NULL THEN\
+        -- \uc0\u1055 \u1088 \u1086 \u1076 \u1091 \u1082 \u1090 \u1080 \u1074 \u1085 \u1110 \u1089 \u1090 \u1100  \u1076 \u1083 \u1103  \u1074 \u1089 \u1110 \u1093  \u1083 \u1072 \u1073 \u1086 \u1088 \u1072 \u1090 \u1086 \u1088 \u1110 \u1081  \u1091  \u1087 \u1086 \u1083 \u1110 \u1082 \u1083 \u1110 \u1085 \u1110 \u1094 \u1110 \
+        SELECT l.name AS laboratory_name, COUNT(lt.test_id) / DATEDIFF(end_date, start_date) AS average_tests_per_day\
+        FROM laboratory l\
+        JOIN laboratory_test lt ON l.lab_id = lt.lab_id\
+        WHERE lt.clinic_id = clinic_id\
+          AND lt.test_date BETWEEN start_date AND end_date\
+        GROUP BY l.name;\
+    ELSE\
+        -- \uc0\u1055 \u1088 \u1086 \u1076 \u1091 \u1082 \u1090 \u1080 \u1074 \u1085 \u1110 \u1089 \u1090 \u1100  \u1076 \u1083 \u1103  \u1074 \u1089 \u1110 \u1093  \u1083 \u1072 \u1073 \u1086 \u1088 \u1072 \u1090 \u1086 \u1088 \u1110 \u1081  \u1091  \u1084 \u1110 \u1089 \u1090 \u1110 \
+        SELECT l.name AS laboratory_name, COUNT(lt.test_id) / DATEDIFF(end_date, start_date) AS average_tests_per_day\
+        FROM laboratory l\
+        JOIN laboratory_test lt ON l.lab_id = lt.lab_id\
+        WHERE lt.test_date BETWEEN start_date AND end_date\
+        GROUP BY l.name;\
+    END IF;\
+END$$\
+DELIMITER ;\
+\
+-- \uc0\u1058 \u1077 \u1089 \u1090 \u1091 \u1074 \u1072 \u1085 \u1085 \u1103  \u1087 \u1088 \u1086 \u1094 \u1077 \u1076 \u1091 \u1088 \u1080 \
+CALL get_laboratory_performance(1, NULL, NULL, '2024-03-01', '2024-03-30'); -- \uc0\u1055 \u1088 \u1086 \u1076 \u1091 \u1082 \u1090 \u1080 \u1074 \u1085 \u1110 \u1089 \u1090 \u1100  \u1076 \u1083 \u1103  \u1083 \u1072 \u1073 \u1086 \u1088 \u1072 \u1090 \u1086 \u1088 \u1110 \u1111  \u1079  ID 1 \u1079 \u1072  \u1087 \u1077 \u1088 \u1110 \u1086 \u1076  01.03.2024 - 30.03.2024\
+CALL get_laboratory_performance(NULL, 1, NULL, '2024-03-01', '2024-03-30'); -- \uc0\u1055 \u1088 \u1086 \u1076 \u1091 \u1082 \u1090 \u1080 \u1074 \u1085 \u1110 \u1089 \u1090 \u1100  \u1076 \u1083 \u1103  \u1074 \u1089 \u1110 \u1093  \u1083 \u1072 \u1073 \u1086 \u1088 \u1072 \u1090 \u1086 \u1088 \u1110 \u1081  \u1091  \u1083 \u1110 \u1082 \u1072 \u1088 \u1085 \u1110  \u1079  ID 1 \u1079 \u1072  \u1087 \u1077 \u1088 \u1110 \u1086 \u1076  01.03.2024 - 30.03.2024\
+CALL get_laboratory_performance(NULL, NULL, 1, '2024-03-01', '2024-03-30'); -- \uc0\u1055 \u1088 \u1086 \u1076 \u1091 \u1082 \u1090 \u1080 \u1074 \u1085 \u1110 \u1089 \u1090 \u1100  \u1076 \u1083 \u1103  \u1074 \u1089 \u1110 \u1093  \u1083 \u1072 \u1073 \u1086 \u1088 \u1072 \u1090 \u1086 \u1088 \u1110 \u1081  \u1091  \u1087 \u1086 \u1083 \u1110 \u1082 \u1083 \u1110 \u1085 \u1110 \u1094 \u1110  \u1079  ID 1 \u1079 \u1072  \u1087 \u1077 \u1088 \u1110 \u1086 \u1076  01.03.2024 - 30.03.2024\
+CALL get_laboratory_performance(NULL, NULL, NULL, '2024-03-01', '2024-03-30'); -- \uc0\u1055 \u1088 \u1086 \u1076 \u1091 \u1082 \u1090 \u1080 \u1074 \u1085 \u1110 \u1089 \u1090 \u1100  \u1076 \u1083 \u1103  \u1074 \u1089 \u1110 \u1093  \u1083 \u1072 \u1073 \u1086 \u1088 \u1072 \u1090 \u1086 \u1088 \u1110 \u1081  \u1091  \u1084 \u1110 \u1089 \u1090 \u1110  \u1079 \u1072  \u1087 \u1077 \u1088 \u1110 \u1086 \u1076  01.03.2024 - 30.03.2024\
+\
+\
+\
+\
+}
